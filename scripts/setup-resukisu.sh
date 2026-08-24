@@ -31,6 +31,17 @@ if ! git -C "$ksu_dir" diff --quiet || ! git -C "$ksu_dir" diff --cached --quiet
 fi
 git -C "$ksu_dir" checkout "$ksu_ref"
 
+# ReSukiSU v4.1.0 derives KSU_VERSION from the local branch named by
+# REPO_BRANCH in kernel/Kbuild. A tag checkout is detached and does not create
+# that branch, which leaves KSU_VERSION empty when the GitHub API is unavailable
+# or rate-limited. Point the build-only local ref at the exact pinned commit.
+ksu_version_branch="$(sed -n 's/^REPO_BRANCH := //p' "$ksu_dir/kernel/Kbuild" | head -n 1)"
+if [ -n "$ksu_version_branch" ]; then
+  git check-ref-format --branch "$ksu_version_branch" >/dev/null
+  git -C "$ksu_dir" branch -f "$ksu_version_branch" "$ksu_ref"
+  git -C "$ksu_dir" rev-list --count "$ksu_version_branch" >/dev/null
+fi
+
 ln -sfn "$kernel_link" "$driver_dir/kernelsu"
 
 if ! grep -q 'kernelsu/' "$driver_dir/Makefile"; then
