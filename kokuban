@@ -139,8 +139,8 @@ run_build() {
   fi
 
   local project="$1"
-  local branch="main"
-  local variant="default"
+  local branch="resukisu"
+  local variant="resukisu"
   shift
 
   if [ "$#" -gt 0 ] && [[ "$1" != -* ]]; then

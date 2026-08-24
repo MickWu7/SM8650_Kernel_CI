@@ -570,7 +570,7 @@ fn handle_setup(
         }
 
         let proj: ProjectConfig = serde_json::from_value(val)?;
-        let repo_url = proj.repo.clone();
+        let repo_url = resolve_repository(&proj.repo);
 
         println!("Processing project: {} -> {}", key, repo_url);
 

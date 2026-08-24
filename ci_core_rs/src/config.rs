@@ -70,9 +70,9 @@ pub struct AnyKernelConfig {
 pub const KSU_CONFIG_JSON: &str = r#"{
     "resukisu": {
         "repo": "https://github.com/ReSukiSU/ReSukiSU.git",
-        "branch": "main",
+        "branch": "v4.1.0",
         "setup_url": "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup.sh",
-        "setup_args": ["main"]
+        "setup_args": ["v4.1.0"]
     }
 }"#;
 

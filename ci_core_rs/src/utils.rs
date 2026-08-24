@@ -121,12 +121,33 @@ pub fn load_projects() -> Result<ProjectsMap> {
     serde_json::from_str(&content).context("Failed to parse projects.json")
 }
 
+fn resolve_repository_with_owner(repo: &str, owner: Option<&str>) -> String {
+    const PLACEHOLDER: &str = "GITHUB_OWNER/";
+
+    match (repo.strip_prefix(PLACEHOLDER), owner) {
+        (Some(name), Some(owner)) if !owner.trim().is_empty() => {
+            format!("{}/{}", owner.trim(), name)
+        }
+        _ => repo.to_string(),
+    }
+}
+
+pub fn resolve_repository(repo: &str) -> String {
+    let owner = env::var("KOKUBAN_GITHUB_OWNER")
+        .ok()
+        .or_else(|| env::var("GITHUB_REPOSITORY_OWNER").ok());
+    resolve_repository_with_owner(repo, owner.as_deref())
+}
+
 pub fn load_project(project_key: &str) -> Result<ProjectConfig> {
     let projects = load_projects()?;
     let proj_val = projects
         .get(project_key)
         .ok_or_else(|| anyhow!("Project not found: {}", project_key))?;
-    serde_json::from_value(proj_val.clone()).context("Failed to parse project config")
+    let mut project: ProjectConfig =
+        serde_json::from_value(proj_val.clone()).context("Failed to parse project config")?;
+    project.repo = resolve_repository(&project.repo);
+    Ok(project)
 }
 
 pub fn load_anykernel_configs() -> Result<AnyKernelConfigMap> {
@@ -258,6 +279,21 @@ mod tests {
         assert_eq!(
             name,
             cache_file_name("https://example.com/toolchain.tar.gz").unwrap()
+        );
+    }
+
+    #[test]
+    fn repository_owner_placeholder_is_portable() {
+        assert_eq!(
+            resolve_repository_with_owner(
+                "GITHUB_OWNER/android_kernel_samsung_sm8650",
+                Some("example-owner")
+            ),
+            "example-owner/android_kernel_samsung_sm8650"
+        );
+        assert_eq!(
+            resolve_repository_with_owner("GITHUB_OWNER/android_kernel_samsung_sm8650", None),
+            "GITHUB_OWNER/android_kernel_samsung_sm8650"
         );
     }
 

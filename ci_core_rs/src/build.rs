@@ -8,9 +8,9 @@ use std::path::{Path, PathBuf};
 
 use crate::config::{AnyKernelConfig, BbgConfig, ProjectConfig, SusfsConfig};
 use crate::utils::{
-    cache_file_name, command_exists, env_flag, file_sha256, handle_notify, is_resukisu_variant,
-    load_anykernel_config, load_project, run_cmd, run_cmd_with_env, set_github_output,
-    url_file_name, variant_suffix,
+    cache_file_name, command_exists, env_flag, file_sha256, get_root_dir, handle_notify,
+    is_resukisu_variant, load_anykernel_config, load_project, run_cmd, run_cmd_with_env,
+    set_github_output, url_file_name, variant_suffix,
 };
 
 const ANYKERNEL_REPO: &str = "https://github.com/YuzakiKokuban/AnyKernel3.git";
@@ -86,11 +86,8 @@ fn download_single_toolchain(
             .file_name()
             .and_then(|name| name.to_str())
             .unwrap_or("toolchain");
-        let tmp_path = cache_path.with_file_name(format!(
-            "{}.tmp-{}",
-            cache_file_name,
-            std::process::id()
-        ));
+        let tmp_path =
+            cache_path.with_file_name(format!("{}.tmp-{}", cache_file_name, std::process::id()));
         let _ = fs::remove_file(&tmp_path);
         let tmp_path_str = tmp_path
             .to_str()
@@ -1231,19 +1228,19 @@ pub fn handle_build(
         .as_deref()
         .map(str::trim)
         .filter(|arg| !arg.is_empty())
-        .unwrap_or("main");
+        .unwrap_or("v4.1.0");
 
-    let setup_url = match branch.as_str() {
-        _ if is_resukisu_variant(&branch) => Some((
-            "https://raw.githubusercontent.com/ReSukiSU/ReSukiSU/main/kernel/setup.sh",
-            resukisu_setup_arg,
-        )),
-        _ => None,
-    };
-
-    if let Some((url, arg)) = setup_url {
-        let cmd = format!("curl -LSs '{}' | bash -s {}", url, arg);
-        run_cmd(&["bash", "-c", &cmd], Some(&kernel_source_path), false)?;
+    let setup_script = get_root_dir().join("scripts/setup-resukisu.sh");
+    let setup_enabled = is_resukisu_variant(&branch);
+    if setup_enabled {
+        let setup_script = setup_script
+            .to_str()
+            .ok_or_else(|| anyhow!("Invalid ReSukiSU setup script path"))?;
+        run_cmd(
+            &["bash", setup_script, resukisu_setup_arg],
+            Some(&kernel_source_path),
+            false,
+        )?;
     }
 
     let mut feature_suffixes = Vec::new();
@@ -1365,7 +1362,7 @@ pub fn handle_build(
     }
 
     if is_sm8850 {
-        prepare_sm8850_build(&kernel_source_path, &proj, setup_url.is_some())?;
+        prepare_sm8850_build(&kernel_source_path, &proj, setup_enabled)?;
     }
 
     if is_sm8850 {
