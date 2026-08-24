@@ -11,7 +11,7 @@ on:
       branch:
         description: 'Git Branch/Tag'
         required: true
-        default: 'resukisu'
+        default: 'resukisu-6.1.99'
       ksu_variant:
         description: 'Build Mode Override'
         type: choice
@@ -86,7 +86,7 @@ jobs:
           if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
             project="${{ github.event.client_payload.project }}"
             branch="${{ github.event.client_payload.branch }}"
-            variant="default"
+            variant="${{ github.event.client_payload.ksu_variant }}"
             release="false"
             custom_localversion=""
             resukisu_setup_arg="v4.1.0"
@@ -97,6 +97,9 @@ jobs:
             fi
             if [ -z "$apply_bbg" ]; then
               apply_bbg="false"
+            fi
+            if [ -z "$variant" ]; then
+              variant="resukisu"
             fi
           else
             project="${{ inputs.project }}"

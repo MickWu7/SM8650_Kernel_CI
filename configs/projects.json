@@ -2,7 +2,7 @@
   "_globals": {},
   "s24_sm8650": {
     "repo": "GITHUB_OWNER/android_kernel_samsung_sm8650",
-    "defconfig": "defconfig",
+    "defconfig": "pineapple_gki_defconfig",
     "localversion_base": "-android14-ReSukiSU-SM8650",
     "lto": "none",
     "supported_ksu": [

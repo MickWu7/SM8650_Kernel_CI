@@ -426,8 +426,8 @@ fn build_project_matrix_entries(
         let entry = if normalized == "resukisu" {
             HashMap::from([
                 ("project".to_string(), project_key.to_string()),
-                ("branch".to_string(), "resukisu".to_string()),
-                ("ksu_variant".to_string(), "default".to_string()),
+                ("branch".to_string(), "resukisu-6.1.99".to_string()),
+                ("ksu_variant".to_string(), "resukisu".to_string()),
             ])
         } else {
             HashMap::from([
@@ -592,7 +592,7 @@ fn handle_setup(
         )?;
 
         let readme_content = process_readme(&readme_tpl, &proj, &repo_url, &readme_language);
-        let target_branches = vec!["main", "resukisu"];
+        let target_branches = vec!["main", "resukisu", "resukisu-6.1.99"];
 
         let remote_out =
             run_cmd(&["git", "branch", "-r"], Some(&target_dir), true)?.unwrap_or_default();

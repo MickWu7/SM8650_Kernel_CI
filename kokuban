@@ -139,7 +139,7 @@ run_build() {
   fi
 
   local project="$1"
-  local branch="resukisu"
+  local branch="resukisu-6.1.99"
   local variant="resukisu"
   shift
 

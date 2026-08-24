@@ -20,11 +20,11 @@ trap 'rm -rf "$tmpdir"' EXIT
 
 export KOKUBAN_CONFIG="$tmpdir/config"
 
-output="$(KOKUBAN_CORE=/bin/echo "$KOKUBAN" build s24_sm8650 resukisu resukisu --no-bbg)"
-assert_contains "$output" "local --project s24_sm8650 --branch resukisu --variant resukisu"
+output="$(KOKUBAN_CORE=/bin/echo "$KOKUBAN" build s24_sm8650 resukisu-6.1.99 resukisu --no-bbg)"
+assert_contains "$output" "local --project s24_sm8650 --branch resukisu-6.1.99 --variant resukisu"
 assert_contains "$output" "--apply-bbg false"
 
-output="$(KOKUBAN_CORE=/bin/echo "$KOKUBAN" plan s24_sm8650 resukisu resukisu --no-susfs --no-bbg)"
+output="$(KOKUBAN_CORE=/bin/echo "$KOKUBAN" plan s24_sm8650 resukisu-6.1.99 resukisu --no-susfs --no-bbg)"
 assert_contains "$output" "--dry-run"
 assert_contains "$output" "--apply-susfs false"
 assert_contains "$output" "--apply-bbg false"
@@ -32,8 +32,9 @@ assert_contains "$output" "--apply-bbg false"
 "$KOKUBAN" config set apply_susfs false >/dev/null
 output="$("$KOKUBAN" plan s24_sm8650)"
 assert_contains "$output" "apply_susfs: false"
+assert_contains "$output" "branch: resukisu-6.1.99"
 
-"$KOKUBAN" preset set daily s24_sm8650 resukisu resukisu --no-bbg >/dev/null
+"$KOKUBAN" preset set daily s24_sm8650 resukisu-6.1.99 resukisu --no-bbg >/dev/null
 output="$("$KOKUBAN" run daily --offline --dry-run)"
 assert_contains "$output" "apply_bbg: false"
 assert_contains "$output" "offline: true"

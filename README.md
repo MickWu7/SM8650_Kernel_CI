@@ -4,7 +4,7 @@
 
 本仓库基于 Kokuban Kernel CI Center 的构建核心，组合以下固定来源：
 
-- 内核源码：`android_kernel_samsung_sm8650` 的 `resukisu` 分支
+- 内核源码：`android_kernel_samsung_sm8650` 的 `resukisu-6.1.99` 分支（基于 `release-KSU-20251028-020628`）
 - ReSukiSU：固定为 `v4.1.0`，不会自动跟随 `main`
 - SuSFS：`gki-android14-6.1`，默认在构建时动态应用
 - 工具链：三星 SM8650 对应的 clang `r487747c` 工具链
@@ -16,12 +16,12 @@
 
 ```text
 android_kernel_samsung_sm8650
-  push main/resukisu
+  push main/resukisu-6.1.99
           |
           | repository_dispatch
           v
 SM8650_Kernel_CI
-  checkout resukisu -> inject ReSukiSU v4.1.0
+  checkout resukisu-6.1.99 -> inject ReSukiSU v4.1.0
   -> apply SuSFS -> build Image -> package AnyKernel3
   -> upload artifact / optional GitHub Release
 ```
@@ -39,7 +39,7 @@ ReSukiSU 源码仓库可以同时镜像到自己的 GitHub，CI 仍通过固定 
 4. 如果内核仓库是私有仓库，也在 `SM8650_Kernel_CI` 创建同名 `CI_TOKEN`，以便中央工作流检出内核源码。
 5. 在中央仓库 Actions 页面运行 **Build Kernel**：
    - Project：`s24_sm8650`
-   - Branch：`resukisu`
+   - Branch：`resukisu-6.1.99`
    - Build Mode：`resukisu`
    - ReSukiSU ref：`v4.1.0`
    - SuSFS：开启
@@ -49,7 +49,7 @@ ReSukiSU 源码仓库可以同时镜像到自己的 GitHub，CI 仍通过固定 
 
 ## 自动构建
 
-内核仓库的 `.github/workflows/trigger-central-build.yml` 会在 `main` 或 `resukisu` 有新提交时触发中央仓库。含 `[skip ci]` 的提交不会触发构建。
+内核仓库的 `.github/workflows/trigger-central-build.yml` 会在 `resukisu-6.1.99` 有新提交时触发中央仓库。含 `[skip ci]` 的提交不会触发构建。
 
 固定版本策略：
 
@@ -64,7 +64,7 @@ ReSukiSU 源码仓库可以同时镜像到自己的 GitHub，CI 仍通过固定 
 ```bash
 ./kokuban validate
 ./kokuban list
-./kokuban plan s24_sm8650 resukisu resukisu
+./kokuban plan s24_sm8650 resukisu-6.1.99 resukisu
 ```
 
 真正的本地内核编译只支持 x86-64 Linux/Ubuntu：
@@ -72,20 +72,20 @@ ReSukiSU 源码仓库可以同时镜像到自己的 GitHub，CI 仍通过固定 
 ```bash
 export KOKUBAN_GITHUB_OWNER="你的 GitHub 用户名"
 ./kokuban doctor
-./kokuban build s24_sm8650 resukisu resukisu
+./kokuban build s24_sm8650 resukisu-6.1.99 resukisu
 ```
 
 常见选项：
 
 ```bash
 # 不应用 SuSFS
-./kokuban build s24_sm8650 resukisu resukisu --no-susfs
+./kokuban build s24_sm8650 resukisu-6.1.99 resukisu --no-susfs
 
 # 启用 Baseband Guard
-./kokuban build s24_sm8650 resukisu resukisu --with-bbg
+./kokuban build s24_sm8650 resukisu-6.1.99 resukisu --with-bbg
 
 # 离线复用已有缓存
-./kokuban build s24_sm8650 resukisu resukisu --offline
+./kokuban build s24_sm8650 resukisu-6.1.99 resukisu --offline
 ```
 
 缓存默认保存在 `~/.cache/kokuban-kernel-ci/`，包含内核 mirror、工具链、AnyKernel3、日志和最终产物。
