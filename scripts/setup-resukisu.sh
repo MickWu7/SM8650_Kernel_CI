@@ -2,7 +2,7 @@
 set -euo pipefail
 
 kernel_root="$PWD"
-ksu_ref="${1:-v4.1.0}"
+ksu_ref="${1:-v4.2.0-rc1}"
 ksu_repo="${RESUKISU_REPO:-https://github.com/ReSukiSU/ReSukiSU.git}"
 
 if [ -d "$kernel_root/common/drivers" ]; then
@@ -31,10 +31,9 @@ if ! git -C "$ksu_dir" diff --quiet || ! git -C "$ksu_dir" diff --cached --quiet
 fi
 git -C "$ksu_dir" checkout "$ksu_ref"
 
-# ReSukiSU v4.1.0 derives KSU_VERSION from the local branch named by
+# Older ReSukiSU releases derive KSU_VERSION from a local branch named by
 # REPO_BRANCH in kernel/Kbuild. A tag checkout is detached and does not create
-# that branch, which leaves KSU_VERSION empty when the GitHub API is unavailable
-# or rate-limited. Point the build-only local ref at the exact pinned commit.
+# that branch, so create the build-only local ref when the release needs it.
 ksu_version_branch="$(sed -n 's/^REPO_BRANCH := //p' "$ksu_dir/kernel/Kbuild" | head -n 1)"
 if [ -n "$ksu_version_branch" ]; then
   git check-ref-format --branch "$ksu_version_branch" >/dev/null

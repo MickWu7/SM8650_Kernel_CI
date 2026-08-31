@@ -5,7 +5,7 @@
 本仓库基于 Kokuban Kernel CI Center 的构建核心，组合以下固定来源：
 
 - 内核源码：`android_kernel_samsung_sm8650` 的 `resukisu-6.1.99` 分支（基于 `release-KSU-20251028-020628`）
-- ReSukiSU：固定为 `v4.1.0`，不会自动跟随 `main`
+- ReSukiSU：固定为 `v4.2.0-rc1`，不会自动跟随 `main`
 - SuSFS：`gki-android14-6.1`，默认在构建时动态应用
 - 工具链：三星 SM8650 对应的 clang `r487747c` 工具链
 - 刷机包：AnyKernel3，设备检查限定为 `e1q`、`e2q`、`e3q`
@@ -21,7 +21,7 @@ android_kernel_samsung_sm8650
           | repository_dispatch
           v
 SM8650_Kernel_CI
-  checkout resukisu-6.1.99 -> inject ReSukiSU v4.1.0
+  checkout resukisu-6.1.99 -> inject ReSukiSU v4.2.0-rc1
   -> apply SuSFS -> build Image -> package AnyKernel3
   -> upload artifact / optional GitHub Release
 ```
@@ -41,7 +41,7 @@ ReSukiSU 源码仓库可以同时镜像到自己的 GitHub，CI 仍通过固定 
    - Project：`s24_sm8650`
    - Branch：`resukisu-6.1.99`
    - Build Mode：`resukisu`
-   - ReSukiSU ref：`v4.1.0`
+   - ReSukiSU ref：`v4.2.0-rc1`
    - SuSFS：开启
    - BBG：按需开启，默认关闭
 
@@ -53,9 +53,9 @@ ReSukiSU 源码仓库可以同时镜像到自己的 GitHub，CI 仍通过固定 
 
 固定版本策略：
 
-- 默认 ReSukiSU ref 是 `v4.1.0`。
+- 默认 ReSukiSU ref 是 `v4.2.0-rc1`。
 - 本仓库不启用上游自动更新工作流，避免构建在无人确认时切换 ReSukiSU 版本。
-- 手动构建仍可临时覆盖 ref，便于以后测试升级，但正式发布应保持 `v4.1.0`。
+- 手动构建仍可临时覆盖 ref，便于以后测试升级，但正式发布应保持 `v4.2.0-rc1`。
 
 ## 本地检查与构建
 
@@ -100,4 +100,4 @@ export KOKUBAN_GITHUB_OWNER="你的 GitHub 用户名"
 
 ## 上游与许可
 
-本仓库的 CI 核心来源于 [Kokuban Kernel CI Center](https://github.com/YuzakiKokuban/Kokuban_Kernel_CI_Center)，内核来源于 [android_kernel_samsung_sm8650](https://github.com/YuzakiKokuban/android_kernel_samsung_sm8650)，ReSukiSU 来源于 [ReSukiSU/ReSukiSU](https://github.com/ReSukiSU/ReSukiSU/tree/v4.1.0)。各组件继续遵循其原始许可证。
+本仓库的 CI 核心来源于 [Kokuban Kernel CI Center](https://github.com/YuzakiKokuban/Kokuban_Kernel_CI_Center)，内核来源于 [android_kernel_samsung_sm8650](https://github.com/YuzakiKokuban/android_kernel_samsung_sm8650)，ReSukiSU 来源于 [ReSukiSU/ReSukiSU](https://github.com/ReSukiSU/ReSukiSU/tree/v4.2.0-rc1)。各组件继续遵循其原始许可证。

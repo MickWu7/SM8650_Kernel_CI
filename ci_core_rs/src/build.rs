@@ -1228,7 +1228,7 @@ pub fn handle_build(
         .as_deref()
         .map(str::trim)
         .filter(|arg| !arg.is_empty())
-        .unwrap_or("v4.1.0");
+        .unwrap_or("v4.2.0-rc1");
 
     let setup_script = get_root_dir().join("scripts/setup-resukisu.sh");
     let setup_enabled = is_resukisu_variant(&branch);
