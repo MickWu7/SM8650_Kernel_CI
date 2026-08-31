@@ -33,7 +33,7 @@ on:
         description: 'ReSukiSU setup.sh argument override'
         type: string
         required: false
-        default: 'v4.1.0'
+        default: 'v4.2.0-rc1'
       apply_susfs:
         description: 'Apply SuSFS dynamically during build'
         type: boolean
@@ -63,7 +63,7 @@ on:
         default: ''
       resukisu_setup_arg:
         type: string
-        default: 'v4.1.0'
+        default: 'v4.2.0-rc1'
       apply_susfs:
         type: boolean
         default: true
@@ -89,7 +89,7 @@ jobs:
             variant="${{ github.event.client_payload.ksu_variant }}"
             release="false"
             custom_localversion=""
-            resukisu_setup_arg="v4.1.0"
+            resukisu_setup_arg="v4.2.0-rc1"
             apply_susfs="${{ github.event.client_payload.apply_susfs }}"
             apply_bbg="${{ github.event.client_payload.apply_bbg }}"
             if [ -z "$apply_susfs" ]; then
